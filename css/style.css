@@ -3682,3 +3682,42 @@ body.order-modal-open {
     margin-right: 14px;
   }
 }
+
+/* === MOKUTON FIX: mobile header nav evenly spaced === */
+/* Равномерно распределяет пункты "Магазин / О бренде / Контакты" на мобильной строке. */
+@media (max-width: 900px) {
+  .header .nav {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+    gap: 0 !important;
+    justify-content: stretch !important;
+    align-items: center;
+    overflow: visible !important;
+    padding: 4px 0 2px;
+  }
+
+  .header .nav > a,
+  .header .nav > .nav-dropdown {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .header .nav > a {
+    white-space: nowrap;
+  }
+
+  .header .nav .nav-dropdown-trigger,
+  .header .nav-dropdown > .nav-link {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .header .nav-dropdown-menu {
+    text-align: left;
+  }
+}
