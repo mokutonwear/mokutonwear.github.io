@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Каталог — MOKUTON</title>
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <header class="header scrolled">
+    <a href="index.html" class="logo">MOKUTON</a>
+
+    <nav class="nav" aria-label="Основная навигация">
+      <div class="nav-dropdown">
+        <button type="button" class="nav-link nav-dropdown-trigger" aria-label="Открыть меню магазина">
+          Магазин
+        </button>
+
+        <div class="nav-dropdown-menu" aria-label="Разделы магазина">
+          <p class="nav-dropdown-title">Магазин</p>
+          <span class="nav-dropdown-divider"></span>
+          <a href="catalog.html">Каталог</a>
+          <a href="delivery.html#shipping">Доставка</a>
+          <a href="delivery.html#returns">Возврат</a>
+          <a href="size-guide.html">Размерная сетка</a>
+          <a href="contacts.html">Контакты</a>
+          <a href="privacy.html">Политика конфиденциальности</a>
+          <a href="offer.html">Публичная оферта</a>
+        </div>
+      </div>
+
+      <a href="index.html#about">О бренде</a>
+      <a href="contacts.html">Контакты</a>
+    </nav>
+
+    <div class="header-actions">
+      <a href="catalog.html" class="header-order-btn">Заказать</a>
+    </div>
+  </header>
+
+  <main class="catalog-page">
+
+    <section class="catalog-hero-screen catalog-hero-showcase">
+      <div class="catalog-hero-copy">
+        <p class="eyebrow">Mokuton shop</p>
+        <h1>Собери<br>свой дроп</h1>
+        <p>
+          Выбери вселенную, затем дизайн и основу вещи.
+          После выбора предмета откроется карточка товара с фото, размерами и ценой.
+        </p>
+      </div>
+
+      <div class="drop-carousel" aria-hidden="true">
+        <span class="drop-carousel-ring"></span>
+        <img class="drop-carousel-item" style="--drop-index: 0" src="img/drop-carousel/drop-1.png" alt="">
+        <img class="drop-carousel-item" style="--drop-index: 1" src="img/drop-carousel/drop-2.png" alt="">
+        <img class="drop-carousel-item" style="--drop-index: 2" src="img/drop-carousel/drop-3.png" alt="">
+        <img class="drop-carousel-item" style="--drop-index: 3" src="img/drop-carousel/drop-4.png" alt="">
+        <img class="drop-carousel-item" style="--drop-index: 4" src="img/drop-carousel/drop-5.png" alt="">
+      </div>
+    </section>
+
+    <section class="catalog-constructor" aria-label="Каталог товаров">
+
+      <section class="quick-catalog" aria-label="Быстрые фильтры каталога">
+        <div class="quick-catalog-head">
+          <div>
+            <p class="eyebrow">Quick access</p>
+            <h2>Быстрый выбор</h2>
+          </div>
+          <p>
+            Для тех, кто уже знает, что ищет. Выбери тип вещи или тег дропа — ниже появятся
+            готовые карточки. Клик по карточке автоматически соберёт товар в конструкторе.
+          </p>
+        </div>
+
+        <div class="quick-filter-row" id="quickFilterRow">
+          <button type="button" class="quick-filter is-active" data-filter="all">Все</button>
+          <button type="button" class="quick-filter" data-filter="hoodie">Худи</button>
+          <button type="button" class="quick-filter" data-filter="tshirt">Футболки</button>
+          <button type="button" class="quick-filter" data-filter="longsleeve">Лонгсливы</button>
+          <button type="button" class="quick-filter" data-filter="tag:первый-дроп">Первый дроп</button>
+          <button type="button" class="quick-filter" data-filter="tag:лимитированный">Лимитированное</button>
+        </div>
+
+        <div class="quick-product-grid" id="quickProductGrid"></div>
+      </section>
+
+      <section class="catalog-step">
+        <div class="catalog-step-head">
+          <span>01</span>
+          <div>
+            <h2>Выбери аниме</h2>
+            <p>Плитка становится активной, остальные приглушаются.</p>
+          </div>
+        </div>
+
+        <div class="choice-grid anime-choice-grid" id="animeGrid"></div>
+      </section>
+
+      <section class="catalog-step is-hidden" id="designStep">
+        <div class="catalog-step-head">
+          <span>02</span>
+          <div>
+            <h2>Выбери дизайн</h2>
+            <p>Для каждого аниме можно заложить три варианта принта.</p>
+          </div>
+        </div>
+
+        <div class="choice-grid design-choice-grid" id="designGrid"></div>
+      </section>
+
+      <section class="catalog-step is-hidden" id="garmentStep">
+        <div class="catalog-step-head">
+          <span>03</span>
+          <div>
+            <h2>Выбери предмет одежды</h2>
+            <p>Худи, футболка или лонгслив на выбранном дизайне.</p>
+          </div>
+        </div>
+
+        <div class="choice-grid garment-choice-grid" id="garmentGrid"></div>
+      </section>
+
+      <section class="product-result is-hidden" id="productResult" aria-live="polite"></section>
+
+    </section>
+
+  </main>
+
+  <footer class="footer" id="about">
+    <div class="footer-grid">
+      <div>
+        <h2>MOKUTON</h2>
+        <p>
+          Wearable artwork inspired by myth,<br>
+          shadow and monochrome illustration.<br>
+          Лимитированные вещи. Без массового рестока.
+        </p>
+      </div>
+
+      <div>
+        <h4>Магазин</h4>
+        <a href="catalog.html">Все товары</a>
+        <a href="catalog.html">Аниме</a>
+        <a href="catalog.html">Худи</a>
+        <a href="catalog.html">Футболки</a>
+      </div>
+
+      <div>
+        <h4>Помощь</h4>
+        <a href="delivery.html#shipping">Доставка</a>
+        <a href="delivery.html#returns">Возврат</a>
+        <a href="size-guide.html">Размерная сетка</a>
+        <a href="contacts.html">Контакты</a>
+        <a href="offer.html">Публичная оферта</a>
+      </div>
+
+      <div>
+        <h4>Соцсети</h4>
+        <a href="contacts.html">Instagram</a>
+        <a href="contacts.html">VK</a>
+        <a href="contacts.html">Telegram</a>
+      </div>
+
+      <div class="footer-logo-card">
+        <img src="img/logo-footer.png" alt="MOKUTON" class="footer-logo-img">
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 MOKUTON. Все права защищены.</span>
+
+      <div class="footer-legal">
+        <a href="privacy.html">Политика конфиденциальности</a>
+        <a href="offer.html">Публичная оферта</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/catalog.js"></script>
+</body>
+</html>

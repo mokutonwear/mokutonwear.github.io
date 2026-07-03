@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Размерная сетка — MOKUTON</title>
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <header class="header scrolled">
+    <a href="index.html" class="logo">MOKUTON</a>
+
+    <nav class="nav" aria-label="Основная навигация">
+      <div class="nav-dropdown">
+        <button type="button" class="nav-link nav-dropdown-trigger" aria-label="Открыть меню магазина">
+          Магазин
+        </button>
+
+        <div class="nav-dropdown-menu" aria-label="Разделы магазина">
+          <p class="nav-dropdown-title">Магазин</p>
+          <span class="nav-dropdown-divider"></span>
+          <a href="catalog.html">Каталог</a>
+          <a href="delivery.html#shipping">Доставка</a>
+          <a href="delivery.html#returns">Возврат</a>
+          <a href="size-guide.html">Размерная сетка</a>
+          <a href="contacts.html">Контакты</a>
+          <a href="privacy.html">Политика конфиденциальности</a>
+          <a href="offer.html">Публичная оферта</a>
+        </div>
+      </div>
+
+      <a href="index.html#about">О бренде</a>
+      <a href="contacts.html">Контакты</a>
+    </nav>
+
+    <div class="header-actions">
+      <a href="catalog.html" class="header-order-btn">Заказать</a>
+    </div>
+  </header>
+
+  <main class="info-page">
+    <section class="info-hero">
+      <p class="eyebrow">Size guide</p>
+      <h1>Размерная
+сетка</h1>
+      <p>Как выбрать размер, снять мерки и не промахнуться с посадкой.</p>
+    </section>
+
+    <section class="info-content">
+      <div class="info-layout">
+        <aside class="info-side">
+          <h3>Разделы</h3>
+          <a href="#table">Таблица</a>
+          <a href="#measure">Как измерять</a>
+          <a href="#advice">Советы</a>
+          <a href="contacts.html">Помощь с размером</a>
+        </aside>
+
+        <div class="info-main">
+          <section class="info-block" id="table">
+            <h2>Размерная сетка</h2>
+            <p>Пока точные лекала не финализированы, таблица оставлена как базовая заготовка. Когда будут реальные замеры худи, футболок и лонгсливов — просто замените цифры.</p>
+            <div class="size-table-wrap">
+              <table class="size-table">
+                <thead>
+                  <tr><th>Размер</th><th>Ширина по груди</th><th>Длина изделия</th><th>Длина рукава</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>S</td><td>уточняется</td><td>уточняется</td><td>уточняется</td></tr>
+                  <tr><td>M</td><td>уточняется</td><td>уточняется</td><td>уточняется</td></tr>
+                  <tr><td>L</td><td>уточняется</td><td>уточняется</td><td>уточняется</td></tr>
+                  <tr><td>XL</td><td>уточняется</td><td>уточняется</td><td>уточняется</td></tr>
+                  <tr><td>XXL</td><td>уточняется</td><td>уточняется</td><td>уточняется</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="info-block" id="measure">
+            <h2>Как измерять</h2>
+            <div class="info-cards">
+              <div class="info-card"><span>Ширина</span><strong>Измерьте вещь от подмышки до подмышки.</strong></div>
+              <div class="info-card"><span>Длина</span><strong>Измерьте от верхней точки плеча до нижнего края.</strong></div>
+              <div class="info-card"><span>Рукав</span><strong>Измерьте от плечевого шва до края манжеты.</strong></div>
+            </div>
+          </section>
+
+          <section class="info-block" id="advice">
+            <h2>Советы</h2>
+            <p>Лучший способ подобрать размер — взять вещь, которая уже хорошо сидит, разложить её на ровной поверхности и сравнить её замеры с таблицей.</p>
+            <p>Если сомневаетесь между двумя размерами, для свободной посадки обычно лучше выбрать больший.</p>
+          </section>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer" id="about">
+    <div class="footer-grid">
+      <div>
+        <h2>MOKUTON</h2>
+        <p>
+          Wearable artwork inspired by myth,<br>
+          shadow and monochrome illustration.<br>
+          Лимитированные вещи. Без массового рестока.
+        </p>
+      </div>
+
+      <div>
+        <h4>Магазин</h4>
+        <a href="catalog.html">Все товары</a>
+        <a href="catalog.html">Аниме</a>
+        <a href="catalog.html">Худи</a>
+        <a href="catalog.html">Футболки</a>
+      </div>
+
+      <div>
+        <h4>Помощь</h4>
+        <a href="delivery.html#shipping">Доставка</a>
+        <a href="delivery.html#returns">Возврат</a>
+        <a href="size-guide.html">Размерная сетка</a>
+        <a href="contacts.html">Контакты</a>
+        <a href="offer.html">Публичная оферта</a>
+      </div>
+
+      <div>
+        <h4>Соцсети</h4>
+        <a href="contacts.html">Instagram</a>
+        <a href="contacts.html">VK</a>
+        <a href="contacts.html">Telegram</a>
+      </div>
+
+      <div class="footer-logo-card">
+        <img src="img/logo-footer.png" alt="MOKUTON" class="footer-logo-img">
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 MOKUTON. Все права защищены.</span>
+
+      <div class="footer-legal">
+        <a href="privacy.html">Политика конфиденциальности</a>
+        <a href="offer.html">Публичная оферта</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
