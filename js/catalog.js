@@ -321,6 +321,53 @@ function escapeHtml(value) {
     .replace(/'/g, "&#039;");
 }
 
+function getAvailableSizeLabel(product, requestedSize) {
+  const requested = normalizeSizeValue(requestedSize);
+
+  if (!requested) return null;
+
+  const availableOption = getProductSizeOptions(product).find((option) =>
+    option.available && normalizeSizeValue(option.label) === requested
+  );
+
+  return availableOption?.label || null;
+}
+
+function normalizePrintPosition(value) {
+  const printPosition = String(value || "").trim();
+  const allowedPositions = ["На груди", "На спине"];
+
+  return allowedPositions.includes(printPosition) ? printPosition : "На груди";
+}
+
+function getCatalogUrlState() {
+  const params = new URLSearchParams(window.location.search);
+
+  return {
+    productId: String(params.get("product") || "").trim(),
+    size: String(params.get("size") || "").trim(),
+    printPosition: String(params.get("print") || "").trim()
+  };
+}
+
+function buildSizeGuideHref() {
+  if (!selectedProduct?.id) return "size-guide.html";
+
+  const params = new URLSearchParams();
+  params.set("from", "order");
+  params.set("product", selectedProduct.id);
+
+  if (selectedSize) {
+    params.set("size", selectedSize);
+  }
+
+  if (selectedPrintPosition) {
+    params.set("print", selectedPrintPosition);
+  }
+
+  return `size-guide.html?${params.toString()}#table`;
+}
+
 function getOrderModalElement() {
   let modal = document.querySelector("#orderModal");
 
@@ -876,6 +923,8 @@ function renderProductCard() {
     sizeOptions.findIndex((option) => option.label === selectedSize)
   );
 
+  const sizeGuideHref = buildSizeGuideHref();
+
   const galleryDotsHtml = productImages.length > 1
     ? `
       <div class="product-gallery-dots" aria-label="Фотографии товара">
@@ -943,7 +992,7 @@ function renderProductCard() {
               `).join("")}
             </div>
 
-            <a href="size-guide.html" class="secondary-btn size-guide-inline">
+            <a href="${escapeHtml(sizeGuideHref)}" class="secondary-btn size-guide-inline">
               Размерная сетка
             </a>
           </div>
@@ -1144,7 +1193,7 @@ function initQuickFilters() {
   renderQuickProducts();
 }
 
-function selectQuickProduct(animeId, designId, garmentId) {
+function selectQuickProduct(animeId, designId, garmentId, options = {}) {
   const anime = catalogData.find((item) => item.id === animeId);
   const design = getRealDesigns(anime).find((item) => item.id === designId);
   const garment = garments.find((item) => item.id === garmentId);
@@ -1152,13 +1201,15 @@ function selectQuickProduct(animeId, designId, garmentId) {
 
   if (!anime || !design || !garment || !product) return;
 
+  const restoredSize = getAvailableSizeLabel(product, options.size);
+
   selectedAnime = anime;
   selectedDesign = design;
   selectedGarment = garment;
   selectedProduct = product;
   selectedImageIndex = 0;
-  selectedSize = getFirstAvailableSize(product);
-  selectedPrintPosition = "На груди";
+  selectedSize = restoredSize || getFirstAvailableSize(product);
+  selectedPrintPosition = normalizePrintPosition(options.printPosition);
 
   renderAnimeTiles();
   renderQuickFilters();
@@ -1171,7 +1222,8 @@ function selectQuickProduct(animeId, designId, garmentId) {
   if (garmentStep) garmentStep.classList.remove("is-hidden");
   if (productResult) productResult.classList.remove("is-hidden");
 
-  productResult?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const scrollBehavior = options.scrollBehavior || "smooth";
+  productResult?.scrollIntoView({ behavior: scrollBehavior, block: "start" });
 }
 
 function selectAnime(animeId) {
@@ -1248,7 +1300,8 @@ function getProductIdFromUrl() {
 }
 
 function openProductFromUrl() {
-  const productId = getProductIdFromUrl();
+  const urlState = getCatalogUrlState();
+  const productId = urlState.productId;
 
   if (!productId) return;
 
@@ -1259,7 +1312,11 @@ function openProductFromUrl() {
     return;
   }
 
-  selectQuickProduct(product.anime_id, product.design_id, product.clothing_type);
+  selectQuickProduct(product.anime_id, product.design_id, product.clothing_type, {
+    size: urlState.size,
+    printPosition: urlState.printPosition,
+    scrollBehavior: "auto"
+  });
 }
 
 async function initCatalog() {
