@@ -10,7 +10,7 @@ const FALLBACK_BG = {
 const GARMENT_IMAGES = {
   hoodie: "img/garments/hoodie.png",
   tshirt: "img/garments/tshirt.png",
-  longsleeve: "img/garments/longsleeve.png"
+  sweatshirt: "img/garments/sweatshirt.png"
 };
 
 const QUICK_INITIAL_LIMIT = 6;
@@ -202,7 +202,7 @@ function buildGarments(productList) {
     }
   });
 
-  const preferredOrder = ["hoodie", "tshirt", "longsleeve"];
+  const preferredOrder = ["hoodie", "tshirt", "sweatshirt"];
 
   return Array.from(garmentMap.values()).sort((a, b) => {
     const aIndex = preferredOrder.indexOf(a.id);
@@ -1124,6 +1124,27 @@ function showCatalogError(error) {
   }
 }
 
+
+function getProductIdFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  return String(params.get("product") || "").trim();
+}
+
+function openProductFromUrl() {
+  const productId = getProductIdFromUrl();
+
+  if (!productId) return;
+
+  const product = products.find((item) => item.id === productId);
+
+  if (!product) {
+    console.warn(`Товар с id "${productId}" не найден`);
+    return;
+  }
+
+  selectQuickProduct(product.anime_id, product.design_id, product.clothing_type);
+}
+
 async function initCatalog() {
   renderQuickSkeletons();
 
@@ -1140,6 +1161,7 @@ async function initCatalog() {
 
     renderAnimeTiles();
     initQuickFilters();
+    openProductFromUrl();
   } catch (error) {
     showCatalogError(error);
   }
