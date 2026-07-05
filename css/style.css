@@ -7,8 +7,6 @@
   --line: rgba(241, 234, 223, 0.28);
 }
 
-
-
 * {
   box-sizing: border-box;
 }
@@ -6469,3 +6467,76 @@ html {
     transition: none !important;
   }
 }
+
+/* === MOKUTON SIZE GUIDE RETURN TO ORDER === */
+/* Кнопка появляется только если size-guide.html открыт из карточки выбранного товара. */
+
+.size-guide-return {
+  margin: 0 0 24px;
+  padding: 18px;
+  border: 1px solid rgba(241, 234, 223, 0.22);
+  background:
+    radial-gradient(circle at 86% 16%, rgba(232, 224, 211, 0.12), transparent 32%),
+    rgba(232, 224, 211, 0.045);
+}
+
+.size-guide-return span {
+  display: block;
+  margin-bottom: 12px;
+  color: rgba(241, 234, 223, 0.52);
+  font-family: "Cinzel", serif;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.size-guide-return-btn {
+  width: 100%;
+  min-height: 46px;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  margin: 0 !important;
+  padding: 0 16px !important;
+  border: 1px solid rgba(241, 234, 223, 0.34) !important;
+  background: var(--cream);
+  color: #111 !important;
+  font-family: "Cinzel", serif;
+  font-size: 12px;
+  letter-spacing: 0.13em;
+  line-height: 1.15;
+  text-align: center;
+  text-transform: uppercase;
+  transition:
+    transform 0.24s ease,
+    filter 0.24s ease,
+    box-shadow 0.24s ease;
+}
+
+.size-guide-return-btn:hover,
+.size-guide-return-btn:focus-visible {
+  transform: translateY(-2px);
+  filter: brightness(1.04);
+  box-shadow:
+    0 14px 30px rgba(0, 0, 0, 0.22),
+    0 0 24px rgba(232, 224, 211, 0.10);
+}
+
+@media (max-width: 900px) {
+  .size-guide-return {
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .size-guide-return {
+    padding: 16px;
+  }
+
+  .size-guide-return-btn {
+    min-height: 48px;
+    font-size: 11px;
+    letter-spacing: 0.11em;
+  }
+}
+
