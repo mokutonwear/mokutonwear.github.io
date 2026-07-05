@@ -270,3 +270,79 @@ async function initHomeProducts() {
 }
 
 document.addEventListener("DOMContentLoaded", initHomeProducts);
+
+/* === MOKUTON MOBILE DROPDOWN TOGGLE FINAL === */
+/* На телефоне: тап по "Магазин" открывает меню, второй тап закрывает. */
+
+(() => {
+  const mobileDropdownQuery = window.matchMedia("(max-width: 900px)");
+
+  function closeAllDropdowns() {
+    document.querySelectorAll(".nav-dropdown.is-open").forEach((dropdown) => {
+      dropdown.classList.remove("is-open");
+
+      const trigger = dropdown.querySelector(".nav-dropdown-trigger");
+      if (trigger) trigger.setAttribute("aria-expanded", "false");
+    });
+  }
+
+  function initMobileDropdowns() {
+    const dropdowns = Array.from(document.querySelectorAll(".nav-dropdown"));
+
+    dropdowns.forEach((dropdown) => {
+      const trigger = dropdown.querySelector(".nav-dropdown-trigger");
+      const menu = dropdown.querySelector(".nav-dropdown-menu");
+
+      if (!trigger || !menu || trigger.dataset.mobileDropdownReady === "true") return;
+
+      trigger.dataset.mobileDropdownReady = "true";
+      trigger.setAttribute("aria-expanded", "false");
+
+      trigger.addEventListener("click", (event) => {
+        if (!mobileDropdownQuery.matches) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        const shouldOpen = !dropdown.classList.contains("is-open");
+
+        closeAllDropdowns();
+
+        if (shouldOpen) {
+          dropdown.classList.add("is-open");
+          trigger.setAttribute("aria-expanded", "true");
+        }
+      });
+
+      menu.addEventListener("click", (event) => {
+        event.stopPropagation();
+      });
+
+      menu.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", closeAllDropdowns);
+      });
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", initMobileDropdowns);
+
+  document.addEventListener("click", (event) => {
+    if (!mobileDropdownQuery.matches) return;
+    if (!event.target.closest(".nav-dropdown")) closeAllDropdowns();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeAllDropdowns();
+  });
+
+  const handleModeChange = () => {
+    if (!mobileDropdownQuery.matches) closeAllDropdowns();
+  };
+
+  if (mobileDropdownQuery.addEventListener) {
+    mobileDropdownQuery.addEventListener("change", handleModeChange);
+  } else if (mobileDropdownQuery.addListener) {
+    mobileDropdownQuery.addListener(handleModeChange);
+  }
+})();
+
