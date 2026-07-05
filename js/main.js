@@ -1,6 +1,8 @@
 const header = document.querySelector('.header');
 
 window.addEventListener('scroll', () => {
+  if (!header) return;
+
   if (window.scrollY > 300) {
     header.classList.add('scrolled');
   } else {
@@ -93,3 +95,178 @@ window.addEventListener('scroll', () => {
   updateScroll();
   animate();
 })();
+
+/* === MOKUTON HOME PRODUCTS FROM CATALOG === */
+
+const HOME_PRODUCTS_URL = "https://script.google.com/macros/s/AKfycbxPV7NyBzIXVTxyL8V23_7Kbi74EQjrac-ltPJ0w-sDJvaZZV2VsdVGNssxjC1XToFODQ/exec";
+const HOME_PRODUCTS_LIMIT = 3;
+
+function homeEscapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function homeParseList(value) {
+  if (Array.isArray(value)) {
+    return value.map((item) => String(item).trim()).filter(Boolean);
+  }
+
+  return String(value || "")
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function homeParseBool(value) {
+  return (
+    value === true ||
+    value === 1 ||
+    value === "1" ||
+    String(value).trim().toLowerCase() === "true"
+  );
+}
+
+function homeFormatPrice(price) {
+  const numberPrice = Number(price || 0);
+
+  if (!numberPrice) return "Цена по запросу";
+
+  return `${numberPrice.toLocaleString("ru-RU")} ₽`;
+}
+
+function homeMakeProductId(item) {
+  return String(
+    item.id ||
+    `${item.anime_id || ""}-${item.design_id || ""}-${item.clothing_type || ""}`
+  ).trim();
+}
+
+function homeMakeProductName(item) {
+  const productName = String(item.product_name || "").trim();
+
+  if (productName) {
+    return productName.replace(/\s+—\s+.+$/u, "");
+  }
+
+  const clothingTitle = String(item.clothing_title || item.clothing_type || "Вещь").trim();
+  const designTitle = String(item.design_title || "Design").trim();
+
+  return `${clothingTitle} ${designTitle}`;
+}
+
+function homeNormalizeProduct(item) {
+  const tags = homeParseList(item.visible_tags || item.tags).slice(0, 1);
+
+  return {
+    id: homeMakeProductId(item),
+    name: homeMakeProductName(item),
+    price: Number(item.price || 0),
+    image: String(item.image_main || item.image || "img/hoodie-white.png").trim(),
+    tag: tags[0] || "Лимитированный дроп",
+    homeOrder: Number(item.home_order || 999),
+    showOnHome: homeParseBool(item.show_on_home)
+  };
+}
+
+function renderHomeProductsSkeleton(grid) {
+  grid.innerHTML = Array.from({ length: HOME_PRODUCTS_LIMIT }, () => `
+    <article class="product-card home-product-skeleton" aria-hidden="true">
+      <div class="home-product-skeleton-image"></div>
+
+      <div class="product-row">
+        <div class="home-product-skeleton-line title"></div>
+        <div class="home-product-skeleton-line price"></div>
+      </div>
+
+      <div class="product-row small">
+        <div class="home-product-skeleton-line tag"></div>
+        <div class="home-product-skeleton-line link"></div>
+      </div>
+    </article>
+  `).join("");
+}
+
+function renderHomeProductsEmpty(grid) {
+  grid.innerHTML = `
+    <div class="home-products-empty">
+      <h3>Товары для главной не выбраны</h3>
+      <p>В таблице Products поставь show_on_home = TRUE у нужных товаров.</p>
+    </div>
+  `;
+}
+
+function renderHomeProducts(grid, products) {
+  grid.innerHTML = products.map((product) => {
+    const productUrl = `catalog.html?product=${encodeURIComponent(product.id)}`;
+
+    return `
+      <article class="product-card home-product-card">
+        <a href="${productUrl}" class="home-product-image-link" aria-label="${homeEscapeHtml(product.name)}">
+          <img src="${homeEscapeHtml(product.image)}" alt="${homeEscapeHtml(product.name)}">
+        </a>
+
+        <div class="product-row">
+          <h3>${homeEscapeHtml(product.name)}</h3>
+          <strong>${homeEscapeHtml(homeFormatPrice(product.price))}</strong>
+        </div>
+
+        <div class="product-row small">
+          <span>◆ ${homeEscapeHtml(product.tag)}</span>
+          <a href="${productUrl}" class="product-view-link">
+            Смотреть <span class="link-arrow" aria-hidden="true">→</span>
+          </a>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+async function initHomeProducts() {
+  const grid = document.querySelector("#homeProductGrid");
+
+  if (!grid) return;
+
+  renderHomeProductsSkeleton(grid);
+
+  try {
+    const response = await fetch(HOME_PRODUCTS_URL);
+
+    if (!response.ok) {
+      throw new Error(`Не удалось загрузить товары. HTTP ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (!Array.isArray(data)) {
+      throw new Error("Таблица вернула не массив товаров");
+    }
+
+    const homeProducts = data
+      .map(homeNormalizeProduct)
+      .filter((product) => product.showOnHome)
+      .sort((a, b) => a.homeOrder - b.homeOrder)
+      .slice(0, HOME_PRODUCTS_LIMIT);
+
+    if (!homeProducts.length) {
+      renderHomeProductsEmpty(grid);
+      return;
+    }
+
+    renderHomeProducts(grid, homeProducts);
+  } catch (error) {
+    console.error(error);
+
+    grid.innerHTML = `
+      <div class="home-products-empty">
+        <h3>Не удалось загрузить товары</h3>
+        <p>Проверь Apps Script, доступ Anyone и таблицу Products.</p>
+      </div>
+    `;
+  }
+}
+
+document.addEventListener("DOMContentLoaded", initHomeProducts);
