@@ -5816,3 +5816,654 @@ html {
     transform: translateX(100%);
   }
 }
+
+/* =========================================================
+   MOKUTON MOBILE HEADER / HERO / HOME CATALOG FIX
+   Fixes:
+   - smaller mobile hero title
+   - centered/aligned mobile nav with larger text
+   - mobile dropdown opens only by JS .is-open, so second tap closes it
+   - tighter home product cards on phone
+   ========================================================= */
+
+/* Mobile dropdown should not stay open just because the trigger has focus.
+   On touch screens it opens only when JS adds .is-open. */
+@media (max-width: 900px) {
+  .header .nav {
+    justify-content: center;
+    overflow: visible;
+  }
+
+  .nav-dropdown:not(.is-open) .nav-dropdown-menu {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transform: translateY(8px) !important;
+  }
+
+  .nav-dropdown.is-open .nav-dropdown-menu {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    transform: translateY(0) !important;
+  }
+
+  .nav-dropdown.is-open > .nav-link::after {
+    transform: rotate(225deg) translateY(-1px);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 640px) and (orientation: portrait) {
+  .header {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .header .nav {
+    width: 100%;
+    justify-content: space-between;
+    gap: 8px;
+    padding-top: 6px;
+    overflow: visible;
+  }
+
+  .nav a,
+  .nav-dropdown-trigger {
+    font-size: 11px;
+    line-height: 1.1;
+    letter-spacing: 0.11em;
+  }
+
+  .nav-dropdown > .nav-link {
+    gap: 7px;
+  }
+
+  .hero h1 {
+    font-size: clamp(40px, 13.2vw, 54px);
+    line-height: 0.94;
+  }
+
+  .collection .product-grid#homeProductGrid {
+    gap: 32px;
+  }
+
+  .home-product-card {
+    overflow: visible;
+  }
+
+  .home-product-card::after {
+    top: 0;
+    bottom: 88px;
+    height: auto;
+  }
+
+  .home-product-card .home-product-image-link {
+    height: clamp(315px, 94vw, 380px);
+    background: #080807;
+  }
+
+  .home-product-card .home-product-image-link img {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    object-fit: cover;
+    object-position: center center;
+  }
+
+  .home-product-card .product-row {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 12px;
+    margin-top: 16px;
+    font-size: 12px;
+    line-height: 1.25;
+  }
+
+  .home-product-card .product-row h3 {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.2;
+    letter-spacing: 0.08em;
+  }
+
+  .home-product-card .product-row strong {
+    display: block;
+    margin: 0;
+    white-space: nowrap;
+    font-size: 14px;
+  }
+
+  .home-product-card .product-row.small {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    margin-top: 18px;
+    font-size: 14px;
+    line-height: 1.3;
+  }
+
+  .home-product-card .product-row.small span,
+  .home-product-card .product-row.small a {
+    display: block;
+    margin: 0;
+  }
+
+  .home-product-card .product-view-link {
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 380px) and (orientation: portrait) {
+  .header .nav {
+    gap: 6px;
+  }
+
+  .nav a,
+  .nav-dropdown-trigger {
+    font-size: 10.5px;
+    letter-spacing: 0.09em;
+  }
+
+  .hero h1 {
+    font-size: 39px;
+  }
+
+  .home-product-card .product-row,
+  .home-product-card .product-row.small {
+    grid-template-columns: 1fr;
+    gap: 7px;
+  }
+
+  .home-product-card .product-row strong {
+    margin-top: 0;
+  }
+}
+
+/* =========================================================
+   MOKUTON MOBILE HEADER DROPDOWN FINAL FIX
+   Держим пункты меню собранными по центру и открываем dropdown
+   на телефоне только через класс .is-open из main.js.
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .header {
+    overflow: visible !important;
+    z-index: 1000;
+  }
+
+  .header .nav {
+    order: 3;
+    flex: 0 0 100%;
+    width: 100%;
+    min-width: 0;
+    display: flex !important;
+    align-items: center;
+    justify-content: center !important;
+    gap: clamp(24px, 7vw, 40px) !important;
+    padding: 8px clamp(12px, 4vw, 28px) 2px !important;
+    overflow: visible !important;
+    scrollbar-width: none;
+  }
+
+  .header .nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .header .nav > a,
+  .header .nav > .nav-dropdown {
+    flex: 0 0 auto;
+  }
+
+  .nav-dropdown {
+    position: static !important;
+    min-height: auto !important;
+  }
+
+  .nav-dropdown > .nav-link {
+    min-height: 32px;
+  }
+
+  .nav-dropdown-menu {
+    position: absolute !important;
+    z-index: 1001;
+    top: calc(100% - 1px) !important;
+    left: clamp(18px, 5vw, 34px) !important;
+    right: clamp(18px, 5vw, 34px) !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    max-height: min(72vh, 540px);
+    overflow-y: auto;
+    padding: 22px 24px !important;
+    transform: translateY(10px) !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  .nav-dropdown:not(.is-open) .nav-dropdown-menu {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transform: translateY(10px) !important;
+  }
+
+  .nav-dropdown.is-open .nav-dropdown-menu {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    transform: translateY(0) !important;
+  }
+
+  .nav-dropdown.is-open > .nav-link::after {
+    transform: rotate(225deg) translateY(-1px) !important;
+    opacity: 1 !important;
+  }
+}
+
+@media (max-width: 640px) and (orientation: portrait) {
+  .header {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+
+  .header .nav {
+    justify-content: center !important;
+    gap: clamp(24px, 7.2vw, 34px) !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  .nav a,
+  .nav-dropdown-trigger {
+    font-size: 11px !important;
+    line-height: 1.1;
+    letter-spacing: 0.105em !important;
+    white-space: nowrap;
+  }
+
+  .nav-dropdown > .nav-link {
+    gap: 7px;
+  }
+
+  .nav-dropdown-menu {
+    left: 20px !important;
+    right: 20px !important;
+  }
+}
+
+@media (max-width: 380px) and (orientation: portrait) {
+  .header {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  .header .nav {
+    gap: clamp(14px, 5.4vw, 22px) !important;
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+  }
+
+  .nav a,
+  .nav-dropdown-trigger {
+    font-size: 10.5px !important;
+    letter-spacing: 0.075em !important;
+  }
+}
+
+/* =========================================================
+   MOKUTON MOBILE MENU ARROW + FONT FINAL TWEAK
+   Fixes:
+   - arrow returns down after second tap / close
+   - focus-within on touch no longer keeps arrow visually opened
+   - mobile menu text is slightly larger
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .nav-dropdown:not(.is-open) > .nav-link::after,
+  .nav-dropdown:not(.is-open):hover > .nav-link::after,
+  .nav-dropdown:not(.is-open):focus-within > .nav-link::after {
+    transform: rotate(45deg) translateY(-2px) !important;
+    opacity: 0.72 !important;
+  }
+
+  .nav-dropdown.is-open > .nav-link::after,
+  .nav-dropdown.is-open:hover > .nav-link::after,
+  .nav-dropdown.is-open:focus-within > .nav-link::after {
+    transform: rotate(225deg) translateY(-1px) !important;
+    opacity: 1 !important;
+  }
+
+  .nav-dropdown-menu a {
+    font-size: 15px;
+    line-height: 1.18;
+  }
+
+  .nav-dropdown-title {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 640px) and (orientation: portrait) {
+  .nav a,
+  .nav-dropdown-trigger {
+    font-size: 11.7px !important;
+    letter-spacing: 0.095em !important;
+  }
+
+  .nav-dropdown-menu a {
+    padding-top: 15px !important;
+    padding-bottom: 15px !important;
+  }
+}
+
+@media (max-width: 380px) and (orientation: portrait) {
+  .nav a,
+  .nav-dropdown-trigger {
+    font-size: 11px !important;
+    letter-spacing: 0.065em !important;
+  }
+}
+
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 560px) {
+  .nav a,
+  .nav-dropdown-trigger {
+    font-size: 10.8px !important;
+    letter-spacing: 0.105em !important;
+  }
+
+  .nav-dropdown-menu a {
+    font-size: 14.5px;
+  }
+}
+
+/* =========================================================
+   MOKUTON MOBILE HOME PRODUCT LINK ARROW FIX
+   Fixes mobile "Смотреть →": arrow stays on the same line as the text.
+   ========================================================= */
+
+@media (max-width: 640px) and (orientation: portrait) {
+  .home-product-card .product-row.small .product-view-link {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 7px !important;
+    width: fit-content !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  .home-product-card .product-row.small .product-view-link .link-arrow {
+    display: inline-block !important;
+    flex: 0 0 auto !important;
+    margin: 0 !important;
+    line-height: 1 !important;
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 560px) {
+  .home-product-card .product-row.small .product-view-link,
+  .product-row.small .product-view-link {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 7px !important;
+    width: fit-content !important;
+    white-space: nowrap !important;
+  }
+
+  .home-product-card .product-row.small .product-view-link .link-arrow,
+  .product-row.small .product-view-link .link-arrow {
+    display: inline-block !important;
+    flex: 0 0 auto !important;
+    margin: 0 !important;
+    line-height: 1 !important;
+  }
+}
+
+
+/* =========================================================
+   MOKUTON SIZE SLIDER
+   Размеры берутся из полной сетки по clothing_type.
+   Доступные размеры активны, отсутствующие остаются на шкале, но заблокированы.
+   ========================================================= */
+
+.size-list.size-slider-wrap {
+  display: block;
+  max-width: 560px;
+}
+
+.size-slider {
+  --size-count: 1;
+  --selected-index: 0;
+
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--size-count), minmax(42px, 1fr));
+  width: 100%;
+  margin: 4px 0 18px;
+  padding: 12px 0 20px;
+  isolation: isolate;
+}
+
+.size-slider::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  left: calc((100% / var(--size-count)) / 2);
+  right: calc((100% / var(--size-count)) / 2);
+  top: 52px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(241, 234, 223, 0.12),
+    rgba(241, 234, 223, 0.34),
+    rgba(241, 234, 223, 0.12)
+  );
+}
+
+.size-step {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  height: 82px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: rgba(241, 234, 223, 0.46);
+  font-family: "Cinzel", serif;
+  font-size: 12px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: visible;
+}
+
+.size-step-label {
+  display: block;
+  white-space: nowrap;
+  opacity: 0.58;
+  transform: translateY(5px);
+  transition:
+    color 0.26s ease,
+    opacity 0.26s ease,
+    font-size 0.26s ease,
+    transform 0.26s cubic-bezier(.22, .72, .18, 1),
+    text-shadow 0.26s ease;
+}
+
+.size-step-mark {
+  position: absolute;
+  left: 50%;
+  top: 47px;
+  width: 1px;
+  height: 13px;
+  transform: translateX(-50%);
+  background: rgba(241, 234, 223, 0.34);
+  transition:
+    height 0.26s ease,
+    top 0.26s ease,
+    width 0.26s ease,
+    background 0.26s ease,
+    box-shadow 0.26s ease,
+    opacity 0.26s ease;
+}
+
+.size-step:not(:disabled):hover .size-step-label,
+.size-step:not(:disabled):focus-visible .size-step-label {
+  opacity: 0.9;
+  color: rgba(241, 234, 223, 0.88);
+  transform: translateY(0);
+}
+
+.size-step:not(:disabled):hover .size-step-mark,
+.size-step:not(:disabled):focus-visible .size-step-mark {
+  background: rgba(241, 234, 223, 0.72);
+  height: 17px;
+  top: 45px;
+}
+
+.size-step.is-selected .size-step-label {
+  opacity: 1;
+  color: #fff4e4;
+  font-size: 18px;
+  transform: translateY(-8px);
+  text-shadow:
+    0 0 14px rgba(232, 224, 211, 0.20),
+    0 8px 20px rgba(0, 0, 0, 0.32);
+}
+
+.size-step.is-selected .size-step-mark {
+  top: 41px;
+  width: 2px;
+  height: 24px;
+  background: var(--cream);
+  box-shadow:
+    0 0 12px rgba(232, 224, 211, 0.34),
+    0 0 28px rgba(232, 224, 211, 0.14);
+}
+
+.size-step.is-unavailable {
+  cursor: not-allowed;
+}
+
+.size-step.is-unavailable .size-step-label {
+  opacity: 0.28;
+  color: rgba(241, 234, 223, 0.36);
+  text-decoration: line-through;
+  text-decoration-color: rgba(241, 234, 223, 0.48);
+  text-decoration-thickness: 1px;
+}
+
+.size-step.is-unavailable .size-step-mark {
+  height: 8px;
+  top: 50px;
+  opacity: 0.34;
+}
+
+.size-slider-wrap .size-guide-inline {
+  width: fit-content;
+  min-width: 190px;
+  margin-top: 2px;
+}
+
+@media (hover: none) {
+  .size-step:not(:disabled):hover .size-step-label {
+    transform: translateY(5px);
+  }
+
+  .size-step.is-selected .size-step-label {
+    transform: translateY(-8px);
+  }
+}
+
+@media (max-width: 640px) and (orientation: portrait) {
+  .size-list.size-slider-wrap {
+    display: block !important;
+    max-width: 100%;
+  }
+
+  .size-slider {
+    grid-template-columns: repeat(var(--size-count), minmax(38px, 1fr));
+    margin-bottom: 16px;
+    padding-top: 10px;
+  }
+
+  .size-slider::before {
+    top: 50px;
+  }
+
+  .size-step {
+    min-height: 0 !important;
+    height: 78px;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+  }
+
+  .size-step-mark {
+    top: 46px;
+  }
+
+  .size-step.is-selected .size-step-label {
+    font-size: 15px;
+    transform: translateY(-7px);
+  }
+
+  .size-step.is-selected .size-step-mark {
+    top: 40px;
+    height: 22px;
+  }
+
+  .size-slider-wrap .size-guide-inline {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 380px) and (orientation: portrait) {
+  .size-slider {
+    grid-template-columns: repeat(var(--size-count), minmax(35px, 1fr));
+  }
+
+  .size-step {
+    font-size: 9.5px;
+    letter-spacing: 0.055em;
+  }
+
+  .size-step.is-selected .size-step-label {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 560px) {
+  .size-list.size-slider-wrap {
+    display: block !important;
+  }
+
+  .size-slider {
+    grid-template-columns: repeat(var(--size-count), minmax(38px, 1fr));
+    margin-bottom: 14px;
+  }
+
+  .size-step {
+    height: 72px;
+    font-size: 10px;
+  }
+
+  .size-step.is-selected .size-step-label {
+    font-size: 15px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .size-step-label,
+  .size-step-mark {
+    transition: none !important;
+  }
+}
