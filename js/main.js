@@ -346,3 +346,65 @@ document.addEventListener("DOMContentLoaded", initHomeProducts);
   }
 })();
 
+/* === MOKUTON SIZE GUIDE RETURN TO ORDER === */
+/* Если размерная сетка открыта из карточки товара, показываем кнопку возврата к выбранному заказу. */
+
+(() => {
+  function buildReturnToOrderHref(params) {
+    const productId = String(params.get("product") || "").trim();
+
+    if (!productId) return "";
+
+    const catalogParams = new URLSearchParams();
+    catalogParams.set("product", productId);
+
+    const size = String(params.get("size") || "").trim();
+    const printPosition = String(params.get("print") || "").trim();
+
+    if (size) {
+      catalogParams.set("size", size);
+    }
+
+    if (printPosition) {
+      catalogParams.set("print", printPosition);
+    }
+
+    return `catalog.html?${catalogParams.toString()}#productResult`;
+  }
+
+  function initSizeGuideReturnToOrder() {
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.get("from") !== "order") return;
+
+    const returnHref = buildReturnToOrderHref(params);
+
+    if (!returnHref) return;
+    if (document.querySelector(".size-guide-return")) return;
+
+    const returnBlock = document.createElement("div");
+    returnBlock.className = "size-guide-return";
+    returnBlock.innerHTML = `
+      <span>Товар уже выбран</span>
+      <a href="${returnHref}" class="size-guide-return-btn">
+        ← Вернуться к заказу
+      </a>
+    `;
+
+    const sideMenu = document.querySelector(".info-side");
+
+    if (sideMenu) {
+      const firstLink = sideMenu.querySelector("a");
+      sideMenu.insertBefore(returnBlock, firstLink || null);
+      return;
+    }
+
+    const infoContent = document.querySelector(".info-content");
+    if (infoContent) {
+      infoContent.prepend(returnBlock);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", initSizeGuideReturnToOrder);
+})();
+
