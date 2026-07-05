@@ -13,7 +13,39 @@ const GARMENT_IMAGES = {
   sweatshirt: "img/garments/sweatshirt.png"
 };
 
-const QUICK_INITIAL_LIMIT = 6;
+const SIZE_SETS_BY_CLOTHING_TYPE = {
+  hoodie: ["XS", "S", "M", "L", "XL", "2XL", "3XL"],
+  "худи": ["XS", "S", "M", "L", "XL", "2XL", "3XL"],
+
+  sweatshirt: ["XS", "S", "M", "L", "XL", "2XL", "3XL"],
+  "свитшот": ["XS", "S", "M", "L", "XL", "2XL", "3XL"],
+
+  tshirt: ["2XS", "XS", "S", "M", "L", "XL", "2XL", "3XL"],
+  "t-shirt": ["2XS", "XS", "S", "M", "L", "XL", "2XL", "3XL"],
+  "футболка": ["2XS", "XS", "S", "M", "L", "XL", "2XL", "3XL"],
+
+  longsleeve: ["XS", "S", "M", "L", "XL", "2XL"],
+  "лонгслив": ["XS", "S", "M", "L", "XL", "2XL"],
+
+  pants: ["XS", "S", "M", "L", "XL"],
+  "штаны": ["XS", "S", "M", "L", "XL"],
+
+  bag: ["ONE SIZE"],
+  accessory: ["ONE SIZE"],
+  accessories: ["ONE SIZE"],
+  "аксессуар": ["ONE SIZE"]
+};
+
+
+const QUICK_DESKTOP_INITIAL_LIMIT = 6;
+const QUICK_MOBILE_INITIAL_LIMIT = 3;
+const quickMobileQuery = window.matchMedia(
+  "(max-width: 640px), (max-width: 900px) and (orientation: landscape) and (max-height: 560px)"
+);
+
+function getQuickInitialLimit() {
+  return quickMobileQuery.matches ? QUICK_MOBILE_INITIAL_LIMIT : QUICK_DESKTOP_INITIAL_LIMIT;
+}
 
 let products = [];
 let catalogData = [];
@@ -29,7 +61,7 @@ const quickFilterRow = document.querySelector("#quickFilterRow");
 const quickProductGrid = document.querySelector("#quickProductGrid");
 
 let activeQuickFilter = "all";
-let quickVisibleCount = QUICK_INITIAL_LIMIT;
+let quickVisibleCount = getQuickInitialLimit();
 let selectedAnime = null;
 let selectedDesign = null;
 let selectedGarment = null;
@@ -64,6 +96,46 @@ function parseList(value) {
     .split(",")
     .map((item) => item.trim())
     .filter(Boolean);
+}
+
+function normalizeSizeValue(size) {
+  return String(size || "")
+    .trim()
+    .replace(/\s+/g, " ")
+    .toUpperCase();
+}
+
+function getSizeSetByClothingType(clothingType) {
+  const typeKey = String(clothingType || "").trim().toLowerCase();
+  return SIZE_SETS_BY_CLOTHING_TYPE[typeKey] || null;
+}
+
+function getProductSizeOptions(product) {
+  const availableSizes = Array.isArray(product?.sizes) ? product.sizes : [];
+  const availableSet = new Set(availableSizes.map(normalizeSizeValue));
+  const baseSizeSet = getSizeSetByClothingType(product?.clothing_type) || availableSizes;
+  const baseSet = new Set(baseSizeSet.map(normalizeSizeValue));
+
+  const sizeOptions = baseSizeSet.map((size) => ({
+    label: size,
+    available: availableSet.has(normalizeSizeValue(size))
+  }));
+
+  availableSizes.forEach((size) => {
+    if (!baseSet.has(normalizeSizeValue(size))) {
+      sizeOptions.push({
+        label: size,
+        available: true
+      });
+    }
+  });
+
+  return sizeOptions;
+}
+
+function getFirstAvailableSize(product) {
+  const firstAvailableOption = getProductSizeOptions(product).find((option) => option.available);
+  return firstAvailableOption?.label || product?.sizes?.[0] || "M";
 }
 
 function parseTags(value) {
@@ -151,7 +223,23 @@ function normalizeProducts(rawProducts) {
       };
     })
     .filter((item) => item.anime_id && item.design_id && item.clothing_type)
-    .sort((a, b) => a.sort_order - b.sort_order);
+    .map((item) => ({
+      ...item,
+      random_order: Math.random()
+    }))
+    .sort((a, b) => {
+      const aPinned = a.sort_order >= 1 && a.sort_order <= 6;
+      const bPinned = b.sort_order >= 1 && b.sort_order <= 6;
+
+      if (aPinned && bPinned) {
+        return a.sort_order - b.sort_order;
+      }
+
+      if (aPinned) return -1;
+      if (bPinned) return 1;
+
+      return a.random_order - b.random_order;
+    });
 }
 
 function buildCatalogData(productList) {
@@ -635,7 +723,7 @@ function getQuickMoreWrap() {
   return quickMoreWrap;
 }
 
-function renderQuickSkeletons(count = QUICK_INITIAL_LIMIT) {
+function renderQuickSkeletons(count = getQuickInitialLimit()) {
   if (!quickProductGrid) return;
 
   quickProductGrid.innerHTML = Array.from({ length: count }, () => `
@@ -774,6 +862,20 @@ function renderProductCard() {
 
   const activeImage = productImages[selectedImageIndex] || productImages[0];
 
+  const sizeOptions = getProductSizeOptions(selectedProduct);
+  const selectedSizeIsAvailable = sizeOptions.some((option) =>
+    option.available && option.label === selectedSize
+  );
+
+  if (!selectedSizeIsAvailable) {
+    selectedSize = getFirstAvailableSize(selectedProduct);
+  }
+
+  const selectedSizeIndex = Math.max(
+    0,
+    sizeOptions.findIndex((option) => option.label === selectedSize)
+  );
+
   const galleryDotsHtml = productImages.length > 1
     ? `
       <div class="product-gallery-dots" aria-label="Фотографии товара">
@@ -821,10 +923,25 @@ function renderProductCard() {
 
         <div class="product-options">
           <h3>Размер</h3>
-          <div class="size-list">
-            ${selectedProduct.sizes.map((size) => `
-              <button type="button" class="size-btn ${size === selectedSize ? "is-selected" : ""}" data-size="${escapeHtml(size)}">${escapeHtml(size)}</button>
-            `).join("")}
+          <div class="size-list size-slider-wrap">
+            <div
+              class="size-slider"
+              style="--size-count: ${sizeOptions.length}; --selected-index: ${selectedSizeIndex};"
+              aria-label="Выбор размера"
+            >
+              ${sizeOptions.map((option, index) => `
+                <button
+                  type="button"
+                  class="size-step ${option.label === selectedSize ? "is-selected" : ""} ${option.available ? "" : "is-unavailable"}"
+                  data-size="${escapeHtml(option.label)}"
+                  ${option.available ? "" : "disabled aria-disabled=\"true\""}
+                  aria-label="${escapeHtml(option.available ? `Выбрать размер ${option.label}` : `Размер ${option.label} недоступен`)}"
+                >
+                  <span class="size-step-label">${escapeHtml(option.label)}</span>
+                  <span class="size-step-mark" aria-hidden="true"></span>
+                </button>
+              `).join("")}
+            </div>
 
             <a href="size-guide.html" class="secondary-btn size-guide-inline">
               Размерная сетка
@@ -894,7 +1011,7 @@ function renderProductCard() {
     });
   });
 
-  productResult.querySelectorAll(".size-btn").forEach((button) => {
+  productResult.querySelectorAll(".size-step:not(:disabled)").forEach((button) => {
     button.addEventListener("click", () => {
       selectedSize = button.dataset.size;
       renderProductCard();
@@ -1003,7 +1120,7 @@ function renderQuickProducts() {
     `;
 
     quickMoreWrap.querySelector("#quickLoadMore").addEventListener("click", () => {
-      quickVisibleCount += QUICK_INITIAL_LIMIT;
+      quickVisibleCount += getQuickInitialLimit();
       renderQuickProducts();
     });
   } else {
@@ -1017,7 +1134,7 @@ function initQuickFilters() {
   quickFilterRow.querySelectorAll(".quick-filter").forEach((button) => {
     button.addEventListener("click", () => {
       activeQuickFilter = button.dataset.filter;
-      quickVisibleCount = QUICK_INITIAL_LIMIT;
+      quickVisibleCount = getQuickInitialLimit();
       renderQuickFilters();
       renderQuickProducts();
     });
@@ -1040,7 +1157,7 @@ function selectQuickProduct(animeId, designId, garmentId) {
   selectedGarment = garment;
   selectedProduct = product;
   selectedImageIndex = 0;
-  selectedSize = product.sizes[0] || "M";
+  selectedSize = getFirstAvailableSize(product);
   selectedPrintPosition = "На груди";
 
   renderAnimeTiles();
@@ -1099,7 +1216,7 @@ function selectGarment(garmentId) {
   selectedGarment = garments.find((garment) => garment.id === garmentId);
   selectedProduct = findProduct(selectedAnime.id, selectedDesign.id, garmentId);
   selectedImageIndex = 0;
-  selectedSize = selectedProduct?.sizes[0] || "M";
+  selectedSize = getFirstAvailableSize(selectedProduct);
   selectedPrintPosition = "На груди";
 
   if (!selectedProduct) return;
@@ -1151,7 +1268,7 @@ async function initCatalog() {
   try {
     const rawProducts = await loadProductsFromSheet();
     products = normalizeProducts(rawProducts);
-    quickVisibleCount = QUICK_INITIAL_LIMIT;
+    quickVisibleCount = getQuickInitialLimit();
     catalogData = buildCatalogData(products);
     garments = buildGarments(products);
 
@@ -1165,6 +1282,25 @@ async function initCatalog() {
   } catch (error) {
     showCatalogError(error);
   }
+}
+
+let lastQuickInitialLimit = getQuickInitialLimit();
+
+function handleQuickLimitModeChange() {
+  const nextQuickInitialLimit = getQuickInitialLimit();
+
+  if (nextQuickInitialLimit === lastQuickInitialLimit) return;
+
+  lastQuickInitialLimit = nextQuickInitialLimit;
+  quickVisibleCount = nextQuickInitialLimit;
+
+  renderQuickProducts();
+}
+
+if (quickMobileQuery.addEventListener) {
+  quickMobileQuery.addEventListener("change", handleQuickLimitModeChange);
+} else if (quickMobileQuery.addListener) {
+  quickMobileQuery.addListener(handleQuickLimitModeChange);
 }
 
 document.addEventListener("DOMContentLoaded", initCatalog);
