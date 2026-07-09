@@ -6539,4 +6539,30 @@ html {
     letter-spacing: 0.11em;
   }
 }
+/* === MOKUTON GLOBAL SCROLLBAR === */
+/* Бежевый ползунок на черном фоне страницы */
 
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--cream) var(--black);
+}
+
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--black);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--cream);
+  border-radius: 999px;
+  border: 2px solid var(--black);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #fff4e4;
+}
