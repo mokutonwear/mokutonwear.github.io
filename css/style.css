@@ -6566,3 +6566,153 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background: #fff4e4;
 }
+
+/* === MOKUTON TELEGRAM LINK === */
+/* Бежевая подчёркнутая ссылка с мягким свечением и лёгким дрожанием при наведении. */
+
+.telegram-link {
+  display: inline-block;
+  color: var(--cream);
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  text-decoration-color: rgba(232, 224, 211, 0.68);
+  transition:
+    color 0.24s ease,
+    text-shadow 0.24s ease,
+    text-decoration-color 0.24s ease;
+}
+
+@keyframes mokuton-telegram-tremble {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0);
+  }
+
+  20% {
+    transform: translate3d(-0.7px, 0, 0) rotate(-0.12deg);
+  }
+
+  40% {
+    transform: translate3d(0.7px, -0.2px, 0) rotate(0.12deg);
+  }
+
+  60% {
+    transform: translate3d(-0.5px, 0.2px, 0) rotate(-0.08deg);
+  }
+
+  80% {
+    transform: translate3d(0.5px, 0, 0) rotate(0.08deg);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .telegram-link:hover,
+  .telegram-link:focus-visible {
+    color: #fff4e4;
+    text-decoration-color: currentColor;
+    text-shadow:
+      0 0 10px rgba(232, 224, 211, 0.34),
+      0 0 24px rgba(232, 224, 211, 0.14);
+    animation: mokuton-telegram-tremble 0.38s ease-in-out infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .telegram-link {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* =========================================================
+   MOKUTON MOBILE HEADER MENU FONT SIZE
+   Увеличенный текст пунктов меню только на мобильных устройствах.
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .header .nav > a,
+  .header .nav .nav-dropdown-trigger {
+    font-size: 13px !important;
+    line-height: 1.15;
+    letter-spacing: 0.085em !important;
+  }
+
+  .nav-dropdown-title {
+    font-size: 15px !important;
+  }
+
+  .nav-dropdown-menu a {
+    font-size: 17px !important;
+    line-height: 1.25;
+  }
+}
+
+@media (max-width: 380px) and (orientation: portrait) {
+  .header .nav > a,
+  .header .nav .nav-dropdown-trigger {
+    font-size: 12px !important;
+    letter-spacing: 0.055em !important;
+  }
+
+  .nav-dropdown-menu a {
+    font-size: 16px !important;
+  }
+}
+/* =========================================================
+   MOKUTON CONTACT CARDS FINAL FIX
+   Три контакта занимают всю ширину блока.
+   Instagram показывается коротким именем, email не разрывается внутри адреса.
+   ========================================================= */
+
+.contact-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.contact-card a,
+.contact-card strong {
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.contact-card .contact-value {
+  width: fit-content;
+  max-width: 100%;
+  white-space: nowrap;
+}
+
+.contact-card .contact-email {
+  font-size: clamp(16px, 1.38vw, 20px);
+  letter-spacing: 0;
+}
+
+@media (max-width: 1180px) {
+  .contact-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .contact-card .contact-email {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 620px) {
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-card .contact-email {
+    font-size: clamp(16px, 5vw, 18px);
+  }
+}
+
+@media (max-width: 360px) {
+  .contact-card {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .contact-card .contact-email {
+    font-size: 15px;
+  }
+}
