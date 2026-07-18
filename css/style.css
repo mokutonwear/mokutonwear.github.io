@@ -2432,6 +2432,7 @@ body.order-modal-open {
 
 .order-form label:nth-of-type(5),
 .order-form label:nth-of-type(6),
+.order-consent,
 .order-modal-message,
 .order-submit-btn {
   grid-column: 1 / -1;
@@ -2463,6 +2464,49 @@ body.order-modal-open {
 .order-form input:focus,
 .order-form textarea:focus {
   border-color: rgba(241, 234, 223, 0.62);
+}
+
+.order-consent {
+  display: flex !important;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 2px 0;
+  cursor: pointer;
+}
+
+.order-consent input[type="checkbox"] {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin: 2px 0 0;
+  padding: 0;
+  accent-color: var(--cream);
+  cursor: pointer;
+}
+
+.order-consent .order-consent-text {
+  display: block;
+  margin: 0;
+  color: rgba(241, 234, 223, 0.72);
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.order-consent a {
+  display: inline;
+  color: var(--cream);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color 0.22s ease, opacity 0.22s ease;
+}
+
+.order-consent a:hover,
+.order-consent a:focus-visible {
+  color: #fff;
 }
 
 .order-modal-message {
@@ -6714,5 +6758,22 @@ html {
 
   .contact-card .contact-email {
     font-size: 15px;
+  }
+}
+
+
+/* === MOKUTON SEPARATE PERSONAL DATA CONSENT === */
+.order-consent + .order-consent {
+  margin-top: -4px;
+}
+
+.order-consent input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--cream);
+  outline-offset: 3px;
+}
+
+@media (max-width: 640px) {
+  .order-consent .order-consent-text {
+    font-size: 13px;
   }
 }
