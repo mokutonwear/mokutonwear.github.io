@@ -435,6 +435,34 @@ function getOrderModalElement() {
           <textarea name="comment" rows="3" placeholder="Например: удобное время связи, пожелания по доставке"></textarea>
         </label>
 
+        <label class="order-consent">
+          <input
+            type="checkbox"
+            name="legal_consent"
+            value="accepted"
+            required
+          >
+          <span class="order-consent-text">
+            Я принимаю условия
+            <a href="offer.html" target="_blank" rel="noopener noreferrer">публичной оферты</a>
+            и
+            <a href="privacy.html" target="_blank" rel="noopener noreferrer">политики конфиденциальности</a>.
+          </span>
+        </label>
+
+        <label class="order-consent">
+          <input
+            type="checkbox"
+            name="personal_data_consent"
+            value="accepted"
+            required
+          >
+          <span class="order-consent-text">
+            Я даю согласие на обработку моих персональных данных в соответствии с
+            <a href="personal-data-consent.html" target="_blank" rel="noopener noreferrer">Согласием на обработку персональных данных</a>.
+          </span>
+        </label>
+
         <div class="order-modal-message" id="orderModalMessage"></div>
 
         <button type="submit" class="big-btn order-submit-btn">
@@ -451,6 +479,40 @@ function getOrderModalElement() {
   });
 
   modal.querySelector("#orderForm").addEventListener("submit", submitOrderForm);
+
+  const consentFields = [
+    {
+      name: "legal_consent",
+      error: "Подтверди согласие с публичной офертой и политикой конфиденциальности."
+    },
+    {
+      name: "personal_data_consent",
+      error: "Подтверди согласие на обработку персональных данных."
+    }
+  ];
+
+  consentFields.forEach(({ name, error }) => {
+    const checkbox = modal.querySelector(`input[name="${name}"]`);
+
+    if (!checkbox) return;
+
+    checkbox.addEventListener("invalid", () => {
+      const message = modal.querySelector("#orderModalMessage");
+      message.textContent = error;
+      message.className = "order-modal-message is-error";
+    });
+
+    checkbox.addEventListener("change", () => {
+      if (!checkbox.checked) return;
+
+      const message = modal.querySelector("#orderModalMessage");
+
+      if (message.textContent === error) {
+        message.textContent = "";
+        message.className = "order-modal-message";
+      }
+    });
+  });
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && modal.classList.contains("is-open")) {
@@ -650,9 +712,23 @@ async function submitOrderForm(event) {
   const telegram = String(formData.get("telegram") || "").trim();
   const address = String(formData.get("address") || "").trim();
   const comment = String(formData.get("comment") || "").trim();
+  const legalConsentAccepted = formData.get("legal_consent") === "accepted";
+  const personalDataConsentAccepted = formData.get("personal_data_consent") === "accepted";
 
   if (!customerName || !email || !phone || !address) {
     message.textContent = "Заполни ФИО, почту, телефон и адрес.";
+    message.className = "order-modal-message is-error";
+    return;
+  }
+
+  if (!legalConsentAccepted) {
+    message.textContent = "Подтверди согласие с публичной офертой и политикой конфиденциальности.";
+    message.className = "order-modal-message is-error";
+    return;
+  }
+
+  if (!personalDataConsentAccepted) {
+    message.textContent = "Подтверди согласие на обработку персональных данных.";
     message.className = "order-modal-message is-error";
     return;
   }
@@ -666,6 +742,8 @@ async function submitOrderForm(event) {
     telegram,
     address,
     comment,
+    legal_consent: "TRUE",
+    personal_data_consent: "TRUE",
 
     product_id: selectedProduct.id,
     product_name: selectedProduct.product_name,
